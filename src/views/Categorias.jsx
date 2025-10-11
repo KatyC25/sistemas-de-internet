@@ -1,14 +1,22 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { db } from "../components/database/firebaseconfig";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import {
+	collection,
+	getDocs,
+	addDoc,
+	doc,
+	deleteDoc,
+} from "firebase/firestore";
 import TablaCategorias from "../components/categorias/TablaCategorias";
 import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategorias";
+import ModalEliminacionCategoria from "../components/categorias/ModalEliminacionCategoria";
 
 const Categorias = () => {
 	const [categorias, setCategorias] = useState([]);
 	const categoriasCollection = collection(db, "categorias");
 	const [mostrarModal, setMostrarModal] = useState(false);
+
 	const [nuevaCategoria, setNuevaCategoria] = useState({
 		nombre: "",
 		descripcion: "",
@@ -20,6 +28,8 @@ const Categorias = () => {
 			[name]: value,
 		}));
 	};
+	const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
+	const [categoriaAEliminar, setCategoriaAEliminar] = useState(null);
 	// Función para agregar una nueva categoría
 	const agregarCategoria = async () => {
 		// Validar campos requeridos
@@ -61,6 +71,29 @@ const Categorias = () => {
 	useEffect(() => {
 		cargarCategorias();
 	}, []);
+	const eliminarCategoria = async () => {
+		if (!categoriaAEliminar) return;
+
+		try {
+			const categoriaRef = doc(db, "categorias", categoriaAEliminar.id);
+			await deleteDoc(categoriaRef);
+
+			cargarCategorias();
+			console.log("Categoría eliminada exitosamente.");
+
+			setMostrarModalEliminar(false);
+			setCategoriaAEliminar(null);
+		} catch (error) {
+			console.error("Error al eliminar la categoría:", error);
+			alert(`Error al eliminar la categoría: ${error.message}`);
+		}
+	};
+	// Función para manejar el clic en el botón "Eliminar"
+	const manejarEliminar = (categoria) => {
+		setCategoriaAEliminar(categoria);
+		setMostrarModalEliminar(true);
+	};
+
 	return (
 		<Container className="mt-4">
 			<h4>Gestión de Categorías</h4>
@@ -75,13 +108,23 @@ const Categorias = () => {
 					</Button>
 				</Col>
 			</Row>
-			<TablaCategorias categorias={categorias} />
+
+			<TablaCategorias
+				categorias={categorias}
+				manejarEliminar={manejarEliminar}
+			/>
 			<ModalRegistroCategoria
 				mostrarModal={mostrarModal}
 				setMostrarModal={setMostrarModal}
 				nuevaCategoria={nuevaCategoria}
 				manejoCambioInput={manejoCambioInput}
 				agregarCategoria={agregarCategoria}
+			/>
+			<ModalEliminacionCategoria
+				mostrarModalEliminar={mostrarModalEliminar}
+				setMostrarModalEliminar={setMostrarModalEliminar}
+				categoriaAEliminar={categoriaAEliminar}
+				eliminarCategoria={eliminarCategoria}
 			/>
 		</Container>
 	);

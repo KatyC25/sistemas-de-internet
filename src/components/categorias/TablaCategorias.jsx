@@ -1,5 +1,5 @@
 import React from "react";
-import { Table } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 
 const styles = {
 	container: {
@@ -36,7 +36,7 @@ const styles = {
 	},
 };
 
-const TablaCategorias = ({ categorias }) => {
+const TablaCategorias = ({ categorias, manejarEliminar }) => {
 	return (
 		<div style={styles.container}>
 			<h2 style={styles.titulo}>Categorías</h2>
@@ -45,6 +45,7 @@ const TablaCategorias = ({ categorias }) => {
 					<tr>
 						<th style={styles.th}>Nombre</th>
 						<th style={styles.th}>Descripción</th>
+						<th style={styles.th}>Acciones</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -52,6 +53,16 @@ const TablaCategorias = ({ categorias }) => {
 						<tr key={categoria.id}>
 							<td style={styles.td}>{categoria.nombre}</td>
 							<td style={styles.td}>{categoria.descripcion}</td>
+							<td>
+								<Button
+									variant="outline-danger"
+									size="sm"
+									className="m-1"
+									onClick={() => manejarEliminar(categoria)}
+								>
+									<i className="bi bi-trash">borrar</i>
+								</Button>
+							</td>
 						</tr>
 					))}
 				</tbody>
