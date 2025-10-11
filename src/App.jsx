@@ -1,30 +1,32 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { Routes, Route } from "react-router-dom";
+import { Container } from "react-bootstrap";
+import BarraNavegacion from "./components/BarraNavegacion";
+import Inicio from "./views/Inicio";
+import Catalogo from "./views/Catalogo";
 import Categorias from "./views/Categorias";
+import Productos from "./views/Productos";
+import Empleados from "./views/Empleados";
+import Contador from "./views/Contador";
+import Login from "./views/Login";
+import "./App.css";
 
 function App() {
-	const [count, setCount] = useState(0);
-
 	return (
-		<>
-			<div>
-				<a href="https://vite.dev" target="_blank" rel="noopener">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank" rel="noopener">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
-			</div>
-			<h1>Diseño de sistemas de internet</h1>
-			<div className="card">
-				<Categorias />
-			</div>
-			<p className="read-the-docs">
-				Click on the Vite and React logos to learn more
-			</p>
-		</>
+		<div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+			<BarraNavegacion />
+			<Container fluid className="flex-grow-1 p-4">
+				<Routes>
+					<Route path="/inicio" element={<Inicio />} />
+					<Route path="/catalogo" element={<Catalogo />} />
+					<Route path="/categorias" element={<Categorias />} />
+					<Route path="/productos" element={<Productos />} />
+					<Route path="/empleados" element={<Empleados />} />
+					<Route path="/contador" element={<Contador />} />
+					<Route path="/login" element={<Login />} />
+					<Route path="/" element={<Inicio />} />
+				</Routes>
+			</Container>
+		</div>
 	);
 }
 
