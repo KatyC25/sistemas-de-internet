@@ -11,16 +11,28 @@ import {
 import TablaCategorias from "../components/categorias/TablaCategorias";
 import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategorias";
 import ModalEliminacionCategoria from "../components/categorias/ModalEliminacionCategoria";
+import CuadroBusquedas from "../components/busquedas/CuadroBusquedas";
 
 const Categorias = () => {
+	// Función vacía para manejar la edición de categorías (puedes implementar la lógica luego)
+	const manejarEditar = (categoria) => {
+		// Aquí va la lógica de edición
+	};
 	const [categorias, setCategorias] = useState([]);
 	const categoriasCollection = collection(db, "categorias");
 	const [mostrarModal, setMostrarModal] = useState(false);
+	const [categoriasFiltradas, setCategoriasFiltradas] = useState([]);
+	const [textoBusqueda, setTextoBusqueda] = useState("");
 
 	const [nuevaCategoria, setNuevaCategoria] = useState({
 		nombre: "",
 		descripcion: "",
 	});
+	const manejarCambioBusqueda = (e) => {
+		const texto = e.target.value.toLowerCase();
+		setTextoBusqueda(texto);
+	};
+
 	const manejoCambioInput = (e) => {
 		const { name, value } = e.target;
 		setNuevaCategoria((prev) => ({
@@ -71,6 +83,21 @@ const Categorias = () => {
 	useEffect(() => {
 		cargarCategorias();
 	}, []);
+
+	// Actualiza las categorías filtradas cada vez que cambian las categorías o el texto de búsqueda
+	useEffect(() => {
+		if (textoBusqueda.trim() === "") {
+			setCategoriasFiltradas(categorias);
+		} else {
+			const texto = textoBusqueda.toLowerCase();
+			const filtradas = categorias.filter(
+				(categoria) =>
+					categoria.nombre?.toLowerCase().includes(texto) ||
+					categoria.descripcion?.toLowerCase().includes(texto),
+			);
+			setCategoriasFiltradas(filtradas);
+		}
+	}, [categorias, textoBusqueda]);
 	const eliminarCategoria = async () => {
 		if (!categoriaAEliminar) return;
 
@@ -107,12 +134,20 @@ const Categorias = () => {
 						Agregar categoría
 					</Button>
 				</Col>
+				<Col lg={5} md={8} sm={8} xs={7}>
+					<CuadroBusquedas
+						textoBusqueda={textoBusqueda}
+						manejarCambioBusqueda={manejarCambioBusqueda}
+					/>
+				</Col>
 			</Row>
 
 			<TablaCategorias
-				categorias={categorias}
+				categorias={categoriasFiltradas}
 				manejarEliminar={manejarEliminar}
+				manejarEditar={manejarEditar}
 			/>
+
 			<ModalRegistroCategoria
 				mostrarModal={mostrarModal}
 				setMostrarModal={setMostrarModal}
