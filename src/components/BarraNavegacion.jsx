@@ -29,6 +29,9 @@ const BarraNavegacion = () => {
 						<Nav.Link as={Link} to="/contador">
 							Contador
 						</Nav.Link>
+						<Nav.Link as={Link} to="/estadisticas">
+							Estadisticas
+						</Nav.Link>
 						<Nav.Link as={Link} to="/login">
 							Login
 						</Nav.Link>
